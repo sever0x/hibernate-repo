@@ -3,8 +3,8 @@ package com.hibernate.entity;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "user")
-public class User {
+@Table(name = "account")
+public class Account {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -21,11 +21,15 @@ public class User {
     @JoinColumn(name = "detail_id")
     private Detail userDetail;
 
-    public User() {
+    @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.DETACH, CascadeType.REFRESH})
+    @JoinColumn(name = "service_id")
+    private Service service;
+
+    public Account() {
 
     }
 
-    public User(String username, String password) {
+    public Account(String username, String password) {
         this.username = username;
         this.password = password;
     }
@@ -62,12 +66,22 @@ public class User {
         this.userDetail = userDetail;
     }
 
+    public Service getService() {
+        return service;
+    }
+
+    public void setService(Service service) {
+        this.service = service;
+    }
+
     @Override
     public String toString() {
-        return "User{" +
+        return "Account{" +
                 "id=" + id +
                 ", username='" + username + '\'' +
                 ", password='" + password + '\'' +
+                ", userDetail=" + userDetail +
+                ", service=" + service +
                 '}';
     }
 }

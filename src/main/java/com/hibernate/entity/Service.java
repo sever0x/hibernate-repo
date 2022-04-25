@@ -25,6 +25,12 @@ public class Service {
             fetch = FetchType.LAZY)
     private List<Account> accounts;
 
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH, CascadeType.DETACH})
+    @JoinTable(name = "service_platform",
+            joinColumns = @JoinColumn(name = "service_id"),
+            inverseJoinColumns = @JoinColumn(name = "platform_id"))
+    private List<Platform> platforms;
+
     public Service() {
 
     }
@@ -73,6 +79,14 @@ public class Service {
         accounts.add(account);
         account.setService(this);
     }
+
+    public void addPlatformToService(Platform platform) {
+        if (platforms == null) {
+            platforms = new ArrayList<>();
+        }
+        platforms.add(platform);
+    }
+
 
     @Override
     public String toString() {

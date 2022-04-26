@@ -8,6 +8,8 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 
+import java.util.List;
+
 public class Main {
     public static void main(String[] args) {
         SessionFactory factory = new Configuration()
@@ -22,32 +24,32 @@ public class Main {
 
         try {
             session = factory.getCurrentSession();
-            Account account1 = new Account("marksev", "kekw");
-            Account account2 = new Account("bulbasaur12", "1191kfw3@@");
-            Detail detail1 = new Detail("Mark", "Kyiv", 18);
-            Detail detail2 = new Detail("Jaroslava", "Kharkiv", 19);
-            account1.setUserDetail(detail1);
-            account2.setUserDetail(detail2);
-
-            Service service1 = new Service("Steam", "USA");
-            Service service2 = new Service("Origin", "USA");
-
-            Platform platform1 = new Platform("PC");
-            Platform platform2 = new Platform("Console");
-            Platform platform3 = new Platform("Mobile");
-
-            service1.addPlatformToService(platform1);
-            service1.addPlatformToService(platform2);
-            service2.addPlatformToService(platform1);
-            service2.addPlatformToService(platform2);
-            service2.addPlatformToService(platform3);
-            service1.addAccountToService(account1);
-            service2.addAccountToService(account2);
-
             session.beginTransaction();
 
-            session.persist(service1);
-            session.persist(service2);
+            Account account = session.get(Account.class, 2);
+            session.delete(account);
+
+            session.createQuery("update Platform set name='Console' where id=2").executeUpdate();
+
+            Account account1 = new Account("shdwraze", "warlock112");
+            Detail detail1 = new Detail("Oleg", "Lviv", 25);
+            account1.setUserDetail(detail1);
+            Account account2 = new Account("night_hawk", "madsa3511");
+            Detail detail2 = new Detail("Anton", "Kharkiv", 16);
+            account2.setUserDetail(detail2);
+            Account account3 = new Account("SERGIO15", "sergiy_d@5g");
+            Detail detail3 = new Detail("Sergey", "Kyiv", 19);
+            account3.setUserDetail(detail3);
+
+            Service service = session.get(Service.class, 2);
+            service.addAccountToService(account1);
+            service.addAccountToService(account2);
+            service.addAccountToService(account3);
+
+            session.persist(service);
+
+            List<Account> accounts = service.getAccounts();
+            System.out.println(accounts);
 
             session.getTransaction().commit();
         } finally {
